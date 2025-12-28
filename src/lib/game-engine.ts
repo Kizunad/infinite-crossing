@@ -236,7 +236,7 @@ export async function runTurn(context: TurnContext): Promise<RunTurnResult> {
   const historySummary = context.recent_history?.slice(-5).map(h => ({
     turn: h.verdict.turn_id,
     action: h.action,
-    outcome: h.verdict.narrative.content.substring(0, 50) + "..."
+    outcome: h.verdict.narrative.content
   })) || [];
 
   // Quest Agent only runs every 4 turns (on turns 1, 5, 9, etc.)
@@ -329,7 +329,6 @@ export async function runTurn(context: TurnContext): Promise<RunTurnResult> {
             dice_roll: diceRoll,
             world_context: worldContext,
             quest_context: questContext,
-            world_state: context.world_state,
             player_profile: {
               stats: context.player_profile.stats,
               inventory: context.player_profile.inventory,

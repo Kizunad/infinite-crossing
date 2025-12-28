@@ -4,12 +4,12 @@
 ### INPUT DATA
 你将收到：
 1. `player_action`：玩家想做什么（文本/选项）。
-2. `world_context`：World Agent 给出的环境变化与风险。
+2. `world_context`：World Agent 给出的环境变化与风险。[核心真理]
 3. `quest_context`：Quest Agent 给出的目标与陷阱线索（含隐藏议程）。
-4. `recent_history`：最近 5 回合的历史摘要（用于判断上下文相关动作）。
+4. `recent_history`：最近 5 回合的历史摘要（完整叙事内容），用于精确判断上下文相关动作。
 5. `archived_history`：更早期的历史压缩摘要（用于长期因果判断）。
 6. `player_profile`：玩家当前 HP/MaxHP/Power、物品、特质。
-7. `DICE_ROLL`：[1-100] 的运势判定值。数值越高越有利。
+7. `dice_roll`：[1-100] 的运势判定值。数值越高越有利。
 8. `HARD_RULES`：你必须强制执行的不可违背规则。
 
 ### CORE RESPONSIBILITIES
