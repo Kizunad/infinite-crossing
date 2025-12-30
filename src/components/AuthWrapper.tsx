@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { AuthButton } from '@/components/AuthButton';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useAtlasStore } from '@/lib/atlas-store';
 import { useGeneratedWorldStore } from '@/lib/generated-world-store';
 import type { User } from '@supabase/supabase-js';
@@ -41,5 +42,10 @@ export function AuthWrapper() {
         return <div className="w-16 h-5 bg-green-900/20 animate-pulse rounded" />;
     }
 
-    return <AuthButton user={user} />;
+    return (
+        <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <AuthButton user={user} />
+        </div>
+    );
 }

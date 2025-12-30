@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useGameStore } from '@/store/game';
+import { useTranslation } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send, Terminal } from 'lucide-react';
@@ -10,6 +11,7 @@ import { JudgeOption } from '@/types/game';
 
 export function ActionPanel() {
     const { history, submitAction, isProcessing, isDead, isTyping } = useGameStore();
+    const { t } = useTranslation();
     const [input, setInput] = useState('');
 
     // Get last turn options or default
@@ -29,6 +31,13 @@ export function ActionPanel() {
     };
 
     const isDisabled = isProcessing || isDead || isTyping;
+
+    const getPlaceholder = () => {
+        if (isProcessing) return t('game.processingTurn');
+        if (isDead) return t('game.connectionLost');
+        if (isTyping) return t('game.waitingTransmission');
+        return t('game.enterAction');
+    };
 
     return (
         <div className="p-4 border-t border-zinc-800 bg-black/80 backdrop-blur z-20">
@@ -68,7 +77,7 @@ export function ActionPanel() {
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={isProcessing ? "系统推演中..." : (isDead ? "连接已断开..." : (isTyping ? "等待传输完毕..." : "输入你的行动..."))}
+                        placeholder={getPlaceholder()}
                         className="pl-9 font-mono transition-all duration-300 focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 focus:shadow-[0_0_15px_rgba(34,197,94,0.15)] bg-black/50"
                         disabled={isDisabled}
                         autoFocus

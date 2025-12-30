@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAtlasStore } from '@/lib/atlas-store';
 import { useGameStore } from '@/store/game';
 import { useGeneratedWorldStore } from '@/lib/generated-world-store';
+import { useTranslation } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,23 +15,16 @@ import { AtlasDialog } from '@/components/game/AtlasDialog';
 import { AuthWrapper } from '@/components/AuthWrapper';
 import { cn } from '@/lib/utils';
 
-const TRANSMISSIONS = [
-    "信号检测：来自扇区 7G 的微弱脉冲...",
-    "警告：时间线波动率超过 15%...",
-    "拦截到加密消息：'不要相信那个...'",
-    "系统更新：RealityAnchor v4.2 已部署。",
-    "侦测到未识别的生命形式特征。",
-    "档案检索：Mistwood 只是开始...",
-    "同步率稳定。准备接入。",
-];
-
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
     const router = useRouter();
+    const { t, tArray } = useTranslation();
     const atlasEntries = useAtlasStore((state) => state.entries);
     const playerStats = useGameStore((state) => state.playerProfile.stats);
     const generatedWorlds = useGeneratedWorldStore((state) => state.worlds);
-    const [signal, setSignal] = useState(TRANSMISSIONS[0]);
+
+    const transmissions = tArray('home.transmissions');
+    const [signal, setSignal] = useState('');
 
     // Combine static and generated worlds for random selection
     const allWorldIds = useMemo(() => {
@@ -46,11 +40,14 @@ export default function LandingPage() {
 
     useEffect(() => {
         setMounted(true);
-        const interval = setInterval(() => {
-            setSignal(TRANSMISSIONS[Math.floor(Math.random() * TRANSMISSIONS.length)]);
-        }, 4000);
-        return () => clearInterval(interval);
-    }, []);
+        if (transmissions.length > 0) {
+            setSignal(transmissions[0]);
+            const interval = setInterval(() => {
+                setSignal(transmissions[Math.floor(Math.random() * transmissions.length)]);
+            }, 4000);
+            return () => clearInterval(interval);
+        }
+    }, [transmissions]);
 
     if (!mounted) return <div className="h-screen bg-black" />;
 
@@ -68,21 +65,21 @@ export default function LandingPage() {
             <header className="w-full p-4 md:p-6 flex justify-between items-center z-20 border-b border-green-900/30 bg-black/90 backdrop-blur-sm">
                 <div className="flex items-center gap-3 text-green-500">
                     <Terminal className="w-5 h-5" />
-                    <span className="font-bold tracking-[0.2em] text-sm">SYS.ROOT // DIMENSION_GATE</span>
+                    <span className="font-bold tracking-[0.2em] text-sm">{t('home.systemTitle')}</span>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
                     <div className="hidden md:flex items-center gap-3 border-r border-green-900/50 pr-4 mr-1">
-                        <span className="text-zinc-500">OPERATIVE POWER: <span className="text-green-400 font-bold ml-1">[{playerStats.power}]</span></span>
+                        <span className="text-zinc-500">{t('home.operativePower')}: <span className="text-green-400 font-bold ml-1">[{playerStats.power}]</span></span>
                     </div>
                     <span className="flex items-center gap-2 text-green-400">
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                         </span>
-                        ONLINE
+                        {t('common.online')}
                     </span>
                     <AuthWrapper />
-                    <span className="text-zinc-600">VER 0.9.3</span>
+                    <span className="text-zinc-600">{t('common.version')}</span>
                 </div>
             </header>
 
@@ -91,7 +88,7 @@ export default function LandingPage() {
                 <div className="mb-12 text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-950/20 text-green-500 border border-green-500/20 text-[10px] tracking-widest uppercase mb-4 animate-pulse">
                         <Activity className="w-3 h-3" />
-                        Neural Link Established
+                        {t('home.neuralLink')}
                     </div>
 
                     <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-green-400 via-green-600 to-green-900 glitch-text" data-text="INFINITE">
@@ -100,11 +97,11 @@ export default function LandingPage() {
 
                     <p className="text-zinc-400 max-w-lg mx-auto text-xs md:text-sm leading-relaxed border-t border-green-900/30 pt-6">
                         <span className="text-green-600 mr-2">::</span>
-                        An inter-dimensional observer system.
-                        Death is merely a data point for future optimization.
+                        {t('home.tagline1')}
+                        {t('home.tagline2')}
                         <br />
                         <span className="text-green-600 mr-2">::</span>
-                        Collect. Adapt. Ascend.
+                        {t('home.tagline3')}
                     </p>
                 </div>
 
@@ -115,7 +112,7 @@ export default function LandingPage() {
                         className="h-16 px-12 text-lg bg-green-600 text-black hover:bg-green-500 hover:scale-105 transition-all duration-300 font-bold tracking-[0.15em] border-2 border-green-500 shadow-[0_0_30px_-5px_rgba(34,197,94,0.6)]"
                     >
                         <Crosshair className="w-5 h-5 mr-3 fill-current animate-[spin_3s_linear_infinite]" />
-                        INITIATE SEQUENCE
+                        {t('home.initiateSequence')}
                     </Button>
                     <Link href="/generate">
                         <Button
@@ -124,7 +121,7 @@ export default function LandingPage() {
                         >
                             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:24px_24px] opacity-20" />
                             <ScanLine className="w-5 h-5 mr-3 group-hover:animate-ping" />
-                            LOCATE SPECIFIC WORLD
+                            {t('home.locateWorld')}
                         </Button>
                     </Link>
                 </div>
@@ -139,24 +136,24 @@ export default function LandingPage() {
                             <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-2 group-hover:text-green-400 transition-colors tracking-widest">
-                                    <Database className="w-3 h-3" /> Atlas Database
+                                    <Database className="w-3 h-3" /> {t('home.atlasDatabase')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex justify-between items-end relative z-10">
                                     <div>
                                         <div className="text-3xl font-black text-green-500">{atlasEntries.length}</div>
-                                        <div className="text-[10px] text-zinc-500 uppercase">Known Fragments</div>
+                                        <div className="text-[10px] text-zinc-500 uppercase">{t('home.knownFragments')}</div>
                                     </div>
                                     <div className="text-right">
                                         <div className="text-xl font-bold text-zinc-400 group-hover:text-green-400 transition-colors">{uniqueTopics}</div>
-                                        <div className="text-[10px] text-zinc-500 uppercase">Unique Topics</div>
+                                        <div className="text-[10px] text-zinc-500 uppercase">{t('home.uniqueTopics')}</div>
                                     </div>
                                 </div>
                                 {lastEntry && (
                                     <div className="mt-4 pt-3 border-t border-green-900/30 text-[10px] text-zinc-500 truncate font-mono flex items-center gap-2">
                                         <ScanLine className="w-3 h-3 text-green-600" />
-                                        Last: <span className="text-green-400">{lastEntry.topic}</span>
+                                        {t('home.lastEntry')}: <span className="text-green-400">{lastEntry.topic}</span>
                                     </div>
                                 )}
                             </CardContent>
@@ -168,7 +165,7 @@ export default function LandingPage() {
                 <Card className="bg-black/60 border-green-900/30 backdrop-blur hover:border-green-500/30 transition-colors group h-full">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-2 group-hover:text-green-400 transition-colors tracking-widest">
-                            <Radio className="w-3 h-3" /> Intercepted Signal
+                            <Radio className="w-3 h-3" /> {t('home.interceptedSignal')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="h-[88px] flex flex-col justify-center">

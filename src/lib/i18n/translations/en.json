@@ -1,0 +1,77 @@
+{
+    "common": {
+        "online": "ONLINE",
+        "version": "VER 0.9.3",
+        "loading": "LOADING...",
+        "initializing": "INITIALIZING...",
+        "redirecting": "REDIRECTING TO PREPARATION PHASE..."
+    },
+    "home": {
+        "systemTitle": "SYS.ROOT // DIMENSION_GATE",
+        "operativePower": "OPERATIVE POWER",
+        "neuralLink": "Neural Link Established",
+        "tagline1": "An inter-dimensional observer system.",
+        "tagline2": "Death is merely a data point for future optimization.",
+        "tagline3": "Collect. Adapt. Ascend.",
+        "initiateSequence": "INITIATE SEQUENCE",
+        "locateWorld": "LOCATE SPECIFIC WORLD",
+        "atlasDatabase": "Atlas Database",
+        "knownFragments": "Known Fragments",
+        "uniqueTopics": "Unique Topics",
+        "lastEntry": "Last",
+        "interceptedSignal": "Intercepted Signal",
+        "targetSelector": "Target Selector",
+        "transmissions": [
+            "Signal detected: Faint pulse from sector 7G...",
+            "Warning: Timeline fluctuation rate exceeds 15%...",
+            "Encrypted message intercepted: 'Don't trust the...'",
+            "System update: RealityAnchor v4.2 deployed.",
+            "Unidentified lifeform signature detected.",
+            "Archive retrieval: Mistwood is just the beginning...",
+            "Sync rate stable. Ready to connect."
+        ]
+    },
+    "game": {
+        "processingTurn": "Processing turn...",
+        "connectionLost": "Connection lost...",
+        "waitingTransmission": "Waiting for transmission...",
+        "enterAction": "Enter your action...",
+        "systemIntegrity": "SYSTEM_INTEGRITY",
+        "hpValue": "HP_VAL",
+        "localCache": "LOCAL_CACHE",
+        "nullInventory": "[ NULL ]",
+        "tasks": "TASKS",
+        "noObjectives": "No active objectives.",
+        "rngOutput": "RNG_OUTPUT",
+        "fastSim": "Fast Sim",
+        "on": "ON",
+        "off": "OFF"
+    },
+    "pause": {
+        "title": "SYSTEM PAUSED",
+        "resume": "RESUME",
+        "exit": "EXIT WORLD"
+    },
+    "prepare": {
+        "title": "PREPARING SEQUENCE",
+        "worldId": "World ID",
+        "startGame": "START GAME"
+    },
+    "auth": {
+        "login": "Login",
+        "logout": "Logout",
+        "guest": "Guest"
+    },
+    "atlas": {
+        "title": "ATLAS DATABASE",
+        "search": "Search entries...",
+        "noEntries": "No entries found.",
+        "viewAtlas": "View Atlas"
+    },
+    "saveLoad": {
+        "title": "SAVE / LOAD",
+        "save": "Save",
+        "load": "Load",
+        "saveSlots": "Save Slots"
+    }
+}

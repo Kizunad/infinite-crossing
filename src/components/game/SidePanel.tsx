@@ -1,6 +1,7 @@
 'use client';
 
 import { useGameStore } from '@/store/game';
+import { useTranslation } from '@/lib/i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Clock, CloudFog, ShieldAlert, Backpack, Package, Zap, Loader2 } from 'lucide-react';
@@ -13,6 +14,7 @@ import { EnvStateCard } from './EnvStateCard';
 
 export function SidePanel() {
     const { playerProfile, currentWorldState, currentQuestState, history, setInputText, fastSimEnabled, toggleFastSim, isPrefetching } = useGameStore();
+    const { t } = useTranslation();
     const stats = playerProfile.stats;
     const inventory = playerProfile.inventory || [];
 
@@ -36,7 +38,7 @@ export function SidePanel() {
                 {lastDiceRoll !== undefined && (
                     <Card className="bg-primary/5 border-primary/20 shrink-0">
                         <CardContent className="p-3 flex items-center justify-between">
-                            <span className="text-sm font-medium text-primary font-mono">&gt; RNG_OUTPUT</span>
+                            <span className="text-sm font-medium text-primary font-mono">&gt; {t('game.rngOutput')}</span>
                             <div className="flex items-center gap-2">
                                 <span className={cn(
                                     "text-xl font-bold font-mono",
@@ -58,13 +60,13 @@ export function SidePanel() {
                 <Card className="shrink-0">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium flex items-center gap-2 font-mono text-green-400">
-                            <ShieldAlert className="w-4 h-4" /> &gt; SYSTEM_INTEGRITY
+                            <ShieldAlert className="w-4 h-4" /> &gt; {t('game.systemIntegrity')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-1 font-mono">
                             <div className="flex justify-between text-xs">
-                                <span className="text-muted-foreground">HP_VAL</span>
+                                <span className="text-muted-foreground">{t('game.hpValue')}</span>
                                 <span className="text-zinc-300">{hp} / {maxHp}</span>
                             </div>
                             <Progress
@@ -83,13 +85,13 @@ export function SidePanel() {
                 <Card className="shrink-0">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium flex items-center gap-2 font-mono text-green-400">
-                            <Backpack className="w-4 h-4" /> &gt; LOCAL_CACHE
+                            <Backpack className="w-4 h-4" /> &gt; {t('game.localCache')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-2">
                         {inventory.length === 0 ? (
                             <div className="text-xs text-muted-foreground text-center py-4 border border-dashed border-zinc-800 rounded font-mono">
-                                [ NULL ]
+                                {t('game.nullInventory')}
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 gap-2">
@@ -118,7 +120,7 @@ export function SidePanel() {
                 {/* Objectives */}
                 <Card className="shrink-0">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium font-mono text-green-400">// TASKS</CardTitle>
+                        <CardTitle className="text-sm font-medium font-mono text-green-400">// {t('game.tasks')}</CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0 font-mono">
                         {currentQuestState && (
@@ -134,7 +136,7 @@ export function SidePanel() {
                                     </li>
                                 ))}
                                 {currentQuestState.visible_objectives.length === 0 && (
-                                    <span className="text-muted-foreground italic">No active objectives.</span>
+                                    <span className="text-muted-foreground italic">{t('game.noObjectives')}</span>
                                 )}
                             </ul>
                         )}
@@ -159,7 +161,7 @@ export function SidePanel() {
                     ) : (
                         <Zap className={cn("w-3 h-3 mr-2", fastSimEnabled && "fill-current")} />
                     )}
-                    Fast Sim: {fastSimEnabled ? 'ON' : 'OFF'}
+                    {t('game.fastSim')}: {fastSimEnabled ? t('game.on') : t('game.off')}
                 </Button>
                 <div className="flex gap-2">
                     <AtlasDialog />

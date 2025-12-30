@@ -1,0 +1,77 @@
+{
+    "common": {
+        "online": "在线",
+        "version": "版本 0.9.3",
+        "loading": "加载中...",
+        "initializing": "初始化中...",
+        "redirecting": "正在重定向至准备阶段..."
+    },
+    "home": {
+        "systemTitle": "SYS.ROOT // 维度之门",
+        "operativePower": "特工能量",
+        "neuralLink": "神经链接已建立",
+        "tagline1": "跨维度观察者系统。",
+        "tagline2": "死亡只是未来优化的数据点。",
+        "tagline3": "收集。适应。超越。",
+        "initiateSequence": "启动序列",
+        "locateWorld": "定位特定世界",
+        "atlasDatabase": "Atlas 数据库",
+        "knownFragments": "已知碎片",
+        "uniqueTopics": "独特主题",
+        "lastEntry": "最新",
+        "interceptedSignal": "拦截信号",
+        "targetSelector": "目标选择器",
+        "transmissions": [
+            "信号检测：来自扇区 7G 的微弱脉冲...",
+            "警告：时间线波动率超过 15%...",
+            "拦截到加密消息：'不要相信那个...'",
+            "系统更新：RealityAnchor v4.2 已部署。",
+            "侦测到未识别的生命形式特征。",
+            "档案检索：Mistwood 只是开始...",
+            "同步率稳定。准备接入。"
+        ]
+    },
+    "game": {
+        "processingTurn": "系统推演中...",
+        "connectionLost": "连接已断开...",
+        "waitingTransmission": "等待传输完毕...",
+        "enterAction": "输入你的行动...",
+        "systemIntegrity": "系统完整性",
+        "hpValue": "生命值",
+        "localCache": "本地缓存",
+        "nullInventory": "[ 空 ]",
+        "tasks": "任务",
+        "noObjectives": "暂无活动目标。",
+        "rngOutput": "随机数输出",
+        "fastSim": "快速模拟",
+        "on": "开",
+        "off": "关"
+    },
+    "pause": {
+        "title": "系统暂停",
+        "resume": "继续",
+        "exit": "退出世界"
+    },
+    "prepare": {
+        "title": "准备序列",
+        "worldId": "世界 ID",
+        "startGame": "开始游戏"
+    },
+    "auth": {
+        "login": "登录",
+        "logout": "登出",
+        "guest": "访客"
+    },
+    "atlas": {
+        "title": "ATLAS 数据库",
+        "search": "搜索条目...",
+        "noEntries": "未找到条目。",
+        "viewAtlas": "查看 Atlas"
+    },
+    "saveLoad": {
+        "title": "保存 / 加载",
+        "save": "保存",
+        "load": "加载",
+        "saveSlots": "存档槽位"
+    }
+}
