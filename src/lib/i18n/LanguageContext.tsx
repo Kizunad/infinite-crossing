@@ -17,13 +17,33 @@ interface LanguageContextType {
     tArray: (key: string) => string[];
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
 const STORAGE_KEY = 'infinite-crossing-language';
 
 function getNestedValue(obj: any, path: string): any {
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 }
+
+// Default context value for SSR
+const defaultContextValue: LanguageContextType = {
+    language: 'zh',
+    setLanguage: () => { },
+    t: (key: string, fallback?: string) => {
+        const value = getNestedValue(translations.zh, key);
+        if (typeof value === 'string') return value;
+        const enValue = getNestedValue(translations.en, key);
+        if (typeof enValue === 'string') return enValue;
+        return fallback ?? key;
+    },
+    tArray: (key: string) => {
+        const value = getNestedValue(translations.zh, key);
+        if (Array.isArray(value)) return value;
+        const enValue = getNestedValue(translations.en, key);
+        if (Array.isArray(enValue)) return enValue;
+        return [];
+    },
+};
+
+const LanguageContext = createContext<LanguageContextType>(defaultContextValue);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
     const [language, setLanguageState] = useState<Language>('zh');
@@ -48,7 +68,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         if (typeof value === 'string') {
             return value;
         }
-        // Fallback to English if not found in current language
         const enValue = getNestedValue(translations.en, key);
         if (typeof enValue === 'string') {
             return enValue;
@@ -68,11 +87,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         return [];
     }, [language]);
 
-    // Prevent hydration mismatch by rendering nothing until mounted
-    if (!mounted) {
-        return <>{children}</>;
-    }
-
+    // Always provide context, use current state (default 'zh' during SSR)
     return (
         <LanguageContext.Provider value={{ language, setLanguage, t, tArray }}>
             {children}
@@ -81,14 +96,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 }
 
 export function useLanguage() {
-    const context = useContext(LanguageContext);
-    if (!context) {
-        throw new Error('useLanguage must be used within a LanguageProvider');
-    }
-    return context;
+    return useContext(LanguageContext);
 }
 
 export function useTranslation() {
     const { t, tArray } = useLanguage();
     return { t, tArray };
 }
+
