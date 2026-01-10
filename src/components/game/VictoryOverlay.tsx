@@ -5,8 +5,8 @@ import { useGameStore } from '@/store/game';
 import { useAtlasStore } from '@/lib/atlas-store';
 import { WORLD_TEMPLATES } from '@/lib/world-constants';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Trophy, Package, Sparkles, AlertTriangle, Loader2, Check, Database } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertTriangle, Loader2, Check, Database } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { LootItem, SettlementAtlasEntry } from '@/types/settlement';
 import type { InventoryItem } from '@/types/game';
@@ -63,6 +63,7 @@ export function VictoryOverlay() {
                             category: entry.category,
                             description: entry.description,
                             source_world_id: currentWorldState.world_id,
+                            carry_penalty: entry.carry_penalty,
                         });
                     });
                 }

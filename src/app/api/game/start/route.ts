@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { loadHardRules, loadWorldTemplate } from '@/lib/game-data';
 import { runTurn } from '@/lib/game-engine';
 import { sanitizeQuestState } from '@/lib/api/sanitize';
@@ -12,6 +13,17 @@ import type { CarriedItem } from '@/types/settlement';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300; // 5 minutes
+
+function getSupabaseServerClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return null;
+  }
+
+  return createSupabaseClient(supabaseUrl, supabaseKey);
+}
 
 const StartRequestSchema = z
   .object({
@@ -61,19 +73,54 @@ export async function POST(req: Request) {
     const isGeneratedWorld = worldTemplateId.startsWith('gen_');
     let world_id: string;
     let world_template: string;
-    let allowSave: boolean;
 
-    if (isGeneratedWorld && parsed.data.generated_world_template) {
-      // Use the passed generated template
+    if (isGeneratedWorld) {
       world_id = worldTemplateId;
-      world_template = parsed.data.generated_world_template;
-      allowSave = true;
+
+      if (parsed.data.generated_world_template) {
+        // Use the passed generated template
+        world_template = parsed.data.generated_world_template;
+      } else {
+        // Fallback: fetch template_content from Supabase so links/bookmarks work.
+        const supabase = getSupabaseServerClient();
+        if (!supabase) {
+          return NextResponse.json(
+            {
+              error_message:
+                'Generated world template missing. Provide generated_world_template or configure Supabase to fetch template_content.',
+            },
+            { status: 400 }
+          );
+        }
+
+        const { data, error } = await supabase
+          .from('generated_worlds')
+          .select('id, template_content')
+          .eq('id', worldTemplateId)
+          .maybeSingle();
+
+        if (error) {
+          console.error('[StartAPI] Fetch generated world failed:', error);
+          return NextResponse.json(
+            { error_message: 'Failed to fetch generated world template.' },
+            { status: 500 }
+          );
+        }
+
+        if (!data?.template_content) {
+          return NextResponse.json(
+            { error_message: 'Generated world not found or missing template_content.' },
+            { status: 404 }
+          );
+        }
+
+        world_template = data.template_content;
+      }
     } else {
       // Load from static templates
       const loadedWorld = await loadWorldTemplate(worldTemplateId);
       world_id = loadedWorld.world_id;
       world_template = loadedWorld.world_template;
-      allowSave = loadedWorld.allowSave;
     }
 
     const hardRules = await loadHardRules();
@@ -110,7 +157,6 @@ export async function POST(req: Request) {
     });
 
     const playerProfile = settlementInit.modified_profile;
-    const penaltyWarnings = settlementInit.warnings;
 
     const worldState: WorldState = {
       world_id,

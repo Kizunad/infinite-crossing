@@ -13,7 +13,6 @@ import { ArchivistAgentSchema } from './schemas';
 import { getModelForAgent } from '../model-config';
 import type { PlayerProfile, GameHistoryItem } from '@/types/game';
 import type {
-    CarriedItem,
     SettlementInitRequest,
     SettlementInitResult,
     SettlementEndRequest,
@@ -211,6 +210,7 @@ export class SettlementAgent {
                 topic: e.topic,
                 category: e.category,
                 description: e.description,
+                carry_penalty: e.carry_penalty,
             }));
 
             return {

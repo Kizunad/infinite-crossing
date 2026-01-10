@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Helper for loose parsing
-const stringOrArray = z.preprocess((val: any) => {
+const stringOrArray = z.preprocess((val: unknown) => {
   if (typeof val === 'string') return [val];
   return val;
 }, z.array(z.string()));
@@ -72,13 +72,19 @@ export const JudgeAgentSchema = z.object({
   }),
   inventory_updates: z.array(InventoryUpdateSchema).optional().default([]),
   options: z.array(JudgeOptionSchema).default([]),
-  death_report: z.preprocess((val: any) => {
-    if (!val) return null;
+  death_report: z.preprocess((val: unknown) => {
+    if (!val || typeof val !== 'object') return null;
+
+    const record = val as Record<string, unknown>;
+
     return {
-      cause_of_death: val.cause_of_death || val.cause || "Unknown Cause",
-      trigger_action: val.trigger_action || val.reason || "Unknown Action",
-      missed_clues: val.missed_clues || [],
-      avoidance_suggestion: val.avoidance_suggestion || "No suggestion provided."
+      cause_of_death:
+        (record.cause_of_death as string) || (record.cause as string) || "Unknown Cause",
+      trigger_action:
+        (record.trigger_action as string) || (record.reason as string) || "Unknown Action",
+      missed_clues: (record.missed_clues as string[]) || [],
+      avoidance_suggestion:
+        (record.avoidance_suggestion as string) || "No suggestion provided.",
     };
   }, z.object({
     cause_of_death: z.string(),
@@ -96,10 +102,17 @@ export const NarratorAgentSchema = z.object({
 
 // --- 5. Archivist Agent (Atlas System) ---
 
+export const ItemCarryPenaltySchema = z.object({
+  type: z.enum(['max_hp_reduction', 'power_reduction', 'trait_curse']),
+  value: z.coerce.number(),
+  description: z.string(),
+});
+
 export const AtlasEntrySchema = z.object({
   topic: z.string().describe("主题，如'镇长', '迷雾', '广播站'"),
   category: z.enum(['location', 'npc', 'rule', 'secret', 'item']).catch('secret'),
   description: z.string().describe("简短的事实描述，不要包含'玩家'字眼，描述客观事实"),
+  carry_penalty: ItemCarryPenaltySchema.optional(),
 });
 
 export const ArchivistAgentSchema = z.object({

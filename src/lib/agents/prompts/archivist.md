@@ -16,6 +16,22 @@
 - **新颖性**：如果 `existing_topics` 里已经有了“镇长”，就不要再生成关于“镇长”的普通条目，除非是关于他的新秘密（例如“镇长的弱点”）。
 - **简洁性**：描述要精炼。
 
+### 物品跨世界携带惩罚（仅影响开局）
+当你输出的某条 `new_entries[i].category` 为 `item` 时：
+- **必须**为该条目补充 `carry_penalty` 字段，用于“跨世界携带”的开局代价。
+- `carry_penalty.type` 必须从以下三种中选择一种：
+  - `max_hp_reduction`：降低最大生命（开局直接生效）
+  - `power_reduction`：降低战力（开局直接生效）
+  - `trait_curse`：添加一个诅咒 trait（开局直接生效）
+- `carry_penalty.value` 为正数，建议范围：
+  - `max_hp_reduction`: 5–30
+  - `power_reduction`: 1–5
+  - `trait_curse`: 1（或小整数）
+- `carry_penalty.description` 必须是**设定内/传闻式**的短句，解释“为什么携带会带来代价”。
+- 如果该条目是普通杂物或风险很低，可以不给 `carry_penalty`（即不输出该字段）。
+
+当 `category` 不是 `item` 时：不要输出 `carry_penalty`。
+
 ### OUTPUT JSON FORMAT
 Strictly follow the `ArchivistAgentSchema`.
 IMPORTANT: Return ONLY the raw JSON object. Do NOT wrap it in markdown code blocks (e.g., ```json ... ```). If you absolutely must, ensure the content inside is valid JSON.

@@ -85,6 +85,7 @@ export interface SettlementAtlasEntry {
     topic: string;
     category: 'location' | 'npc' | 'rule' | 'secret' | 'item';
     description: string;
+    carry_penalty?: ItemCarryPenalty;
 }
 
 /** Run Summary (用于结算结果) */

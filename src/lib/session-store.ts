@@ -63,9 +63,10 @@ export async function createSession(input: Omit<GameSession, 'session_id'>, user
 
     if (error) {
       console.error('[SessionStore] Create session error:', error);
-      // Fallback to memory
-      memoryStore.set(session_id, session);
     }
+
+    // Always refresh memory cache so getSession can't return stale state.
+    memoryStore.set(session_id, session);
   } else {
     memoryStore.set(session_id, session);
   }
@@ -138,8 +139,10 @@ export async function saveSession(session: GameSession): Promise<void> {
 
     if (error) {
       console.error('[SessionStore] Save session error:', error);
-      memoryStore.set(session.session_id, session);
     }
+
+    // Always refresh memory cache so getSession can't return stale state.
+    memoryStore.set(session.session_id, { ...session, timestamp: Date.now() });
   } else {
     memoryStore.set(session.session_id, { ...session, timestamp: Date.now() });
   }

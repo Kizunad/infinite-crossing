@@ -12,7 +12,7 @@ import { Shuffle, Play, ArrowLeft } from 'lucide-react';
 function PrepareContent() {
     const { sessionId, startNewGame, isProcessing } = useGameStore();
     const { entries: atlasEntries } = useAtlasStore();
-    const { worlds: generatedWorlds, getWorld, incrementPlayCount, fetchWorlds } = useGeneratedWorldStore();
+    const { worlds: generatedWorlds, isLoading: isGeneratedWorldsLoading, getWorld, incrementPlayCount, fetchWorlds } = useGeneratedWorldStore();
     const [mounted, setMounted] = useState(false);
     const router = useRouter();
 
@@ -43,10 +43,21 @@ function PrepareContent() {
     const generatedWorld = isGeneratedWorld ? getWorld(worldId) : undefined;
 
     useEffect(() => {
-        setMounted(true);
+        const timer = setTimeout(() => setMounted(true), 0);
         // Fetch worlds from Supabase on mount
         fetchWorlds();
+        return () => clearTimeout(timer);
     }, [fetchWorlds]);
+
+    // Ensure generated world metadata is loaded when deep-linking to gen_*.
+    useEffect(() => {
+        if (!mounted) return;
+        if (!isGeneratedWorld) return;
+        if (generatedWorld) return;
+        if (isGeneratedWorldsLoading) return;
+
+        fetchWorlds();
+    }, [mounted, isGeneratedWorld, generatedWorld, isGeneratedWorldsLoading, fetchWorlds]);
 
     // Random world selection
     const handleRandomWorld = () => {
@@ -90,6 +101,8 @@ function PrepareContent() {
         );
     };
 
+    const canStart = !isGeneratedWorld || !!generatedWorld;
+
     return (
         <main className="dark h-screen w-full flex flex-col items-center justify-center bg-black text-green-500 font-mono gap-8 p-4 relative overflow-hidden">
             {/* CRT Scanline Effect */}
@@ -124,6 +137,11 @@ function PrepareContent() {
                         {currentWorld?.type === 'generated' && (
                             <p className="text-purple-400 text-xs">[ USER-GENERATED DIMENSION ]</p>
                         )}
+                        {isGeneratedWorld && !generatedWorld && (
+                            <p className="text-amber-400/80 text-[10px] tracking-widest uppercase animate-pulse">
+                                [ FETCHING DIMENSION ARCHIVE... ]
+                            </p>
+                        )}
                     </div>
 
                     <div className="h-px w-full bg-green-500/30 my-4" />
@@ -148,10 +166,11 @@ function PrepareContent() {
                             <Button
                                 size="lg"
                                 onClick={handleStartGame}
-                                className="w-full bg-green-900/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-black transition-all duration-300 font-mono"
+                                disabled={!canStart}
+                                className="w-full bg-green-900/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-black transition-all duration-300 font-mono disabled:opacity-50 disabled:hover:bg-green-900/20 disabled:hover:text-green-400"
                             >
                                 <Play className="w-4 h-4 mr-2" />
-                                [ INITIATE CONNECTION ]
+                                {canStart ? '[ INITIATE CONNECTION ]' : '[ LOADING WORLD DATA ]'}
                             </Button>
 
                             <Button
@@ -175,7 +194,7 @@ function PrepareContent() {
                         LOADOUT PROTOCOL
                     </h2>
                     <p className="text-xs text-green-500/60 mb-4 border-b border-green-500/20 pb-2 relative z-10">
-            // Select one additional artifact from the Atlas database to materialize in this simulation.
+                        {'// Select one additional artifact from the Atlas database to materialize in this simulation.'}
                     </p>
 
                     {availableItems.length > 0 ? (

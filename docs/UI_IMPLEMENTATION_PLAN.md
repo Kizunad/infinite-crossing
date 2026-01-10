@@ -22,7 +22,7 @@
 
 1.  **`useGameStore`**:
     *   `history`: 存储每一回合的 `JudgeVerdict`。
-    *   `playerStats`: 同步更新生命值、理智、暴露度。
+    *   `playerStats`: 同步更新生命值与力量（HP/Power）。
     *   `currentObjectives`: 显示来自 Quest Agent 的任务。
     *   `isProcessing`: 全局 Loading 状态，控制 UI 锁定。
 
@@ -34,7 +34,7 @@
     *   **行动选择**：渲染 `Judge` 给出的 3 个按钮。
     *   **自由输入**：底部输入框，允许玩家输入自由指令。
 2.  **`SidePanel` (侧栏 Dashboard)**:
-    *   **数值可视化**：使用 Progress Bar 显示 HP/SAN/Exposure。
+    *   **数值可视化**：使用 Progress Bar 显示 HP/Power。
     *   **任务目标**：显示系统发布的（带坑的）任务。
     *   **环境卡片**：显示时间、天气、当前地点。
 
@@ -55,7 +55,7 @@
 ### 2. UI 交互验证 (UX Flow)
 - [ ] 界面应在点击按钮后进入 `isProcessing` 状态，按钮不可重复点击。
 - [ ] 侧栏数值变化应有过渡动画。
-- [ ] **必杀测试**：在“雾隐镇”触发噪音，UI 必须能展示出 `Exposure` 激增并最终导致 `DeathOverlay` 弹出。
+- [ ] **必杀测试**：在“雾隐镇”触发高风险行动，UI 必须能展示出 `HP` 显著下降并最终导致 `DeathOverlay` 弹出。
 
 ### 3. 数据隔离验证 (Data Isolation)
 - [ ] 刷新页面后，当前进度不应丢失（除非未做持久化，MVP 阶段可存入 localStorage）。
